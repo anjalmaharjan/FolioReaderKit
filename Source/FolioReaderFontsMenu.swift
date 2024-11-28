@@ -111,12 +111,12 @@ class FolioReaderFontsMenu: UIViewController, SMSegmentViewDelegate, UIGestureRe
         menuView.layer.shouldRasterize = true
         view.addSubview(menuView)
 
-        let normalColor = UIColor(white: 0.5, alpha: 0.7)
+        let normalColor = UIColor(white: 0.1, alpha: 0.7)
         let selectedColor = self.readerConfig.tintColor
         let sun = UIImage(readerImageNamed: "icon-sun")
         let moon = UIImage(readerImageNamed: "icon-moon")
-        let fontSmall = UIImage(readerImageNamed: "icon-font-small")
-        let fontBig = UIImage(readerImageNamed: "icon-font-big")
+        let fontSmall = UIImage(readerImageNamed: "a-small")
+        let fontBig = UIImage(readerImageNamed: "a-large")
 
         let sunNormal = sun?.imageTintColor(normalColor)?.withRenderingMode(.alwaysOriginal)
         let moonNormal = moon?.imageTintColor(normalColor)?.withRenderingMode(.alwaysOriginal)
@@ -127,6 +127,8 @@ class FolioReaderFontsMenu: UIViewController, SMSegmentViewDelegate, UIGestureRe
         let moonSelected = moon?.imageTintColor(selectedColor)?.withRenderingMode(.alwaysOriginal)
 
         // Day night mode
+		
+		
         let dayNight = SMSegmentView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 55),
                                      separatorColour: self.readerConfig.nightModeSeparatorColor,
                                      separatorWidth: 1,
@@ -138,21 +140,65 @@ class FolioReaderFontsMenu: UIViewController, SMSegmentViewDelegate, UIGestureRe
                                         keySegmentOffSelectionTextColour: normalColor,
                                         keyContentVerticalMargin: 17 as AnyObject
             ])
+		
+		/*
         dayNight.delegate = self
         dayNight.tag = 1
         dayNight.addSegmentWithTitle(self.readerConfig.localizedFontMenuDay, onSelectionImage: sunSelected, offSelectionImage: sunNormal)
         dayNight.addSegmentWithTitle(self.readerConfig.localizedFontMenuNight, onSelectionImage: moonSelected, offSelectionImage: moonNormal)
         dayNight.selectSegmentAtIndex(self.folioReader.nightMode ? 1 : 0)
-        menuView.addSubview(dayNight)
-
+//        menuView.addSubview(dayNight)
+		*/
+		 
 
         // Separator
-        let line = UIView(frame: CGRect(x: 0, y: dayNight.frame.height+dayNight.frame.origin.y, width: view.frame.width, height: 1))
-        line.backgroundColor = self.readerConfig.nightModeSeparatorColor
+		let line = UIView(frame: CGRect(x: 0, y: dayNight.frame.height+dayNight.frame.origin.y, width: view.frame.width, height: 1))
+		let fontNameHeight: CGFloat = self.readerConfig.canChangeFontStyle ? 55: 0
+		let fontName = SMSegmentView(frame: CGRect(x: 15, y: line.frame.height+line.frame.origin.y, width: view.frame.width-30, height: fontNameHeight),
+									 separatorColour: UIColor.clear,
+									 separatorWidth: 0,
+									 segmentProperties:  [
+										keySegmentOnSelectionColour: UIColor.clear,
+										keySegmentOffSelectionColour: UIColor.clear,
+										keySegmentOnSelectionTextColour: selectedColor,
+										keySegmentOffSelectionTextColour: normalColor,
+										keyContentVerticalMargin: 17 as AnyObject
+									 ])
+		fontName.delegate = self
+		
+		let title = UILabel()
+		title.text = "Font Style"
+		title.textColor = .black // Set text color
+		title.font = UIFont.systemFont(ofSize: 20) // Set font and size
+		title.textAlignment = .left
+		title.frame = CGRect(x: 30, y: line.frame.height + 10, width: 300, height: 50)
+		menuView.addSubview(title) // Add the label to the view
+		
+		let description = UILabel()
+		description.text = "Customize text size for improved readability and a more comfortable experience."
+		description.textColor = .gray // Set text color
+		description.font = UIFont.systemFont(ofSize: 14) // Set font and size
+		description.textAlignment = .left
+		description.frame = CGRect(x: 30, y: line.frame.height + 55, width: 300, height: 50)
+		description.numberOfLines = 0 // Allow multiple lines
+		menuView.addSubview(description)
+		
+			// Set line spacing
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.lineSpacing = 3 // Adjust the line spacing value as needed
+		let attributes: [NSAttributedString.Key: Any] = [
+			.paragraphStyle: paragraphStyle
+		]
+		
+		let attributedString = NSMutableAttributedString(string: description.text ?? "", attributes: attributes)
+		description.attributedText = attributedString// Add the label to the view
+
+
+		/*
+                line.backgroundColor = self.readerConfig.nightModeSeparatorColor
         menuView.addSubview(line)
 
         // Fonts adjust
-        let fontNameHeight: CGFloat = self.readerConfig.canChangeFontStyle ? 55: 0
         let fontName = SMSegmentView(frame: CGRect(x: 15, y: line.frame.height+line.frame.origin.y, width: view.frame.width-30, height: fontNameHeight),
                                      separatorColour: UIColor.clear,
                                      separatorWidth: 0,
@@ -171,18 +217,24 @@ class FolioReaderFontsMenu: UIViewController, SMSegmentViewDelegate, UIGestureRe
         fontName.addSegmentWithTitle("Lora", onSelectionImage: nil, offSelectionImage: nil)
         fontName.addSegmentWithTitle("Raleway", onSelectionImage: nil, offSelectionImage: nil)
 
-//        fontName.segments[0].titleFont = UIFont(name: "Andada-Regular", size: 18)!
-//        fontName.segments[1].titleFont = UIFont(name: "Lato-Regular", size: 18)!
-//        fontName.segments[2].titleFont = UIFont(name: "Lora-Regular", size: 18)!
-//        fontName.segments[3].titleFont = UIFont(name: "Raleway-Regular", size: 18)!
+        fontName.segments[0].titleFont = UIFont(name: "Andada-Regular", size: 18)!
+        fontName.segments[1].titleFont = UIFont(name: "Lato-Regular", size: 18)!
+        fontName.segments[2].titleFont = UIFont(name: "Lora-Regular", size: 18)!
+        fontName.segments[3].titleFont = UIFont(name: "Raleway-Regular", size: 18)!
 
         fontName.selectSegmentAtIndex(self.folioReader.currentFont.rawValue)
         menuView.addSubview(fontName)
 
         // Separator 2
-        let line2 = UIView(frame: CGRect(x: 0, y: fontName.frame.height+fontName.frame.origin.y, width: view.frame.width, height: 1))
+        
         line2.backgroundColor = self.readerConfig.nightModeSeparatorColor
         menuView.addSubview(line2)
+		 */
+		
+		
+		
+		
+		let line2 = UIView(frame: CGRect(x: 0, y: fontName.frame.height+fontName.frame.origin.y, width: view.frame.width, height: 1))
 
         // Font slider size
         let slider = HADiscreteSlider(frame: CGRect(x: 60, y: line2.frame.origin.y+2, width: view.frame.width-120, height: 55))
@@ -226,6 +278,7 @@ class FolioReaderFontsMenu: UIViewController, SMSegmentViewDelegate, UIGestureRe
         }
 
         // Separator 3
+		/*
         let line3 = UIView(frame: CGRect(x: 0, y: line2.frame.origin.y+56, width: view.frame.width, height: 1))
         line3.backgroundColor = self.readerConfig.nightModeSeparatorColor
         menuView.addSubview(line3)
@@ -236,8 +289,10 @@ class FolioReaderFontsMenu: UIViewController, SMSegmentViewDelegate, UIGestureRe
         let horizontalNormal = horizontal?.imageTintColor(normalColor)?.withRenderingMode(.alwaysOriginal)
         let verticalSelected = vertical?.imageTintColor(selectedColor)?.withRenderingMode(.alwaysOriginal)
         let horizontalSelected = horizontal?.imageTintColor(selectedColor)?.withRenderingMode(.alwaysOriginal)
-
-        // Layout direction
+        */
+        
+		// ----- Layout direction ------
+		/*
         let layoutDirection = SMSegmentView(frame: CGRect(x: 0, y: line3.frame.origin.y, width: view.frame.width, height: 55),
                                             separatorColour: self.readerConfig.nightModeSeparatorColor,
                                             separatorWidth: 1,
@@ -267,6 +322,7 @@ class FolioReaderFontsMenu: UIViewController, SMSegmentViewDelegate, UIGestureRe
             layoutDirection.selectSegmentAtIndex(FolioReaderScrollDirection.horizontal.rawValue)
         }
         menuView.addSubview(layoutDirection)
+		 */
     }
 
     // MARK: - SMSegmentView delegate

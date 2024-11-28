@@ -261,12 +261,24 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
     func configureNavBarButtons() {
 
         // Navbar buttons
-        let shareIcon = UIImage(readerImageNamed: "icon-navbar-share")?.ignoreSystemTint(withConfiguration: self.readerConfig)
-        let audioIcon = UIImage(readerImageNamed: "icon-navbar-tts")?.ignoreSystemTint(withConfiguration: self.readerConfig) //man-speech-icon
-        let closeIcon = UIImage(readerImageNamed: "icon-navbar-close")?.ignoreSystemTint(withConfiguration: self.readerConfig)
+		
+		//let shareIcon = UIImage(readerImageNamed: "icon-navbar-share")?.ignoreSystemTint(withConfiguration: self.readerConfig)
+		
+		//let fontIcon = UIImage(readerImageNamed: "icon-navbar-font")?.ignoreSystemTint(withConfiguration: self.readerConfig)
+		
+		//let audioIcon = UIImage(readerImageNamed: "icon-navbar-tts")?.ignoreSystemTint(withConfiguration: self.readerConfig) //man-speech-icon
+
+		let tripleDot = UIImage(readerImageNamed: "triple-dot")?.ignoreSystemTint(withConfiguration: self.readerConfig)
+		
+		let fontIcon = UIImage(readerImageNamed: "a-font")?.ignoreSystemTint(withConfiguration: self.readerConfig)
+		
+        let closeIcon = UIImage(readerImageNamed: "arrow-back")?.ignoreSystemTint(withConfiguration: self.readerConfig)
+		
         let tocIcon = UIImage(readerImageNamed: "icon-navbar-toc")?.ignoreSystemTint(withConfiguration: self.readerConfig)
-        let fontIcon = UIImage(readerImageNamed: "icon-navbar-font")?.ignoreSystemTint(withConfiguration: self.readerConfig)
-        let space = 70 as CGFloat
+     
+		let bookMark = UIImage(readerImageNamed: "bookmark")?.ignoreSystemTint(withConfiguration: self.readerConfig)
+		
+        let space = 20 as CGFloat
 
         let menu = UIBarButtonItem(image: closeIcon, style: .plain, target: self, action:#selector(closeReader(_:)))
         let toc = UIBarButtonItem(image: tocIcon, style: .plain, target: self, action:#selector(presentChapterList(_:)))
@@ -274,24 +286,36 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
         navigationItem.leftBarButtonItems = [menu, toc]
 
         var rightBarIcons = [UIBarButtonItem]()
+		
+		// ------ NOTE ACTUAL CODE -----------
+		
+			//        if (self.readerConfig.allowSharing == true) {
+			//            rightBarIcons.append(UIBarButtonItem(image: shareIcon, style: .plain, target: self, action:#selector(shareChapter(_:))))
+			//
+			//        }
+		
+			//        if self.book.hasAudio || self.readerConfig.enableTTS {
+			//            rightBarIcons.append(UIBarButtonItem(image: audioIcon, style: .plain, target: self, action:#selector(presentPlayerMenu(_:))))
+			//        }
+		// ----------------------------------------
 
-        if (self.readerConfig.allowSharing == true) {
-            rightBarIcons.append(UIBarButtonItem(image: shareIcon, style: .plain, target: self, action:#selector(shareChapter(_:))))
-        }
+		
+//		rightBarIcons.append(UIBarButtonItem(image: tripleDot, style: .plain, target:self, action: #selector(doNothing)))
+		
+		let font = UIBarButtonItem(image: fontIcon, style: .plain, target: self, action: #selector(presentFontsMenu))
+			//        font.width = space
+			//
+		rightBarIcons.append(contentsOf: [font])
+		
+		rightBarIcons.append(UIBarButtonItem(image: bookMark, style: .plain, target:self, action: #selector(doNothing)))
 
-        if self.book.hasAudio || self.readerConfig.enableTTS {
-            rightBarIcons.append(UIBarButtonItem(image: audioIcon, style: .plain, target: self, action:#selector(presentPlayerMenu(_:))))
-        }
 
-        let font = UIBarButtonItem(image: fontIcon, style: .plain, target: self, action: #selector(presentFontsMenu))
-        font.width = space
-
-        rightBarIcons.append(contentsOf: [font])
-        navigationItem.rightBarButtonItems = rightBarIcons
         
-        if(self.readerConfig.displayTitle){
-            navigationItem.title = book.title
-        }
+        navigationItem.rightBarButtonItems = rightBarIcons
+//        
+//        if(self.readerConfig.displayTitle){
+//            navigationItem.title = book.title
+//        }
     }
 
     func reloadData() {
@@ -1058,6 +1082,8 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
     func audioMark(href: String, fragmentID: String) {
         changePageWith(href: href, andAudioMarkID: fragmentID)
     }
+	
+	@objc func doNothing(){}
 
     // MARK: - Sharing
 
@@ -1321,20 +1347,35 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
     /**
      Present chapter list
      */
-    @objc func presentChapterList(_ sender: UIBarButtonItem) {
-        folioReader.saveReaderState()
-
-        let chapter = FolioReaderChapterList(folioReader: folioReader, readerConfig: readerConfig, book: book, delegate: self)
-        let highlight = FolioReaderHighlightList(folioReader: folioReader, readerConfig: readerConfig)
-        let pageController = PageViewController(folioReader: folioReader, readerConfig: readerConfig)
-
-        pageController.viewControllerOne = chapter
-        pageController.viewControllerTwo = highlight
-        pageController.segmentedControlItems = [readerConfig.localizedContentsTitle, readerConfig.localizedHighlightsTitle]
-
-        let nav = UINavigationController(rootViewController: pageController)
-        present(nav, animated: true, completion: nil)
-    }
+	@objc func presentChapterList(_ sender: UIBarButtonItem) {
+		folioReader.saveReaderState()
+		
+			// Create the chapter and highlight views
+		let chapter = FolioReaderChapterList(folioReader: folioReader, readerConfig: readerConfig, book: book, delegate: self)
+		let highlight = FolioReaderHighlightList(folioReader: folioReader, readerConfig: readerConfig)
+		
+		
+			// Create the PageViewController and configure it
+		let pageController = PageViewController(folioReader: folioReader, readerConfig: readerConfig)
+		pageController.viewControllerOne = chapter
+		pageController.viewControllerTwo = highlight
+		pageController.segmentedControlItems = [readerConfig.localizedContentsTitle, readerConfig.localizedHighlightsTitle]
+		
+			// Create the navigation controller
+		let nav = UINavigationController(rootViewController: pageController)
+		nav.modalPresentationStyle = .fullScreen
+		nav.view.backgroundColor = UIColor.white
+		
+			// Present the navigation controller
+		present(nav, animated: true, completion: nil)
+	}
+	
+	
+	
+	@objc func customButtonTapped() {
+			// Dismiss the current view controller
+		self.dismiss(animated: true, completion: nil)
+	}
 
     /**
      Present fonts and settings menu

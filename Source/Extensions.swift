@@ -431,7 +431,7 @@ internal extension UIImage {
 internal extension UIViewController {
     
     func setCloseButton(withConfiguration readerConfig: FolioReaderConfig) {
-        let closeImage = UIImage(readerImageNamed: "icon-navbar-close")?.ignoreSystemTint(withConfiguration: readerConfig)
+        let closeImage = UIImage(readerImageNamed: "arrow-back")?.ignoreSystemTint(withConfiguration: readerConfig)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: closeImage, style: .plain, target: self, action: #selector(dismiss as () -> Void))
     }
     
