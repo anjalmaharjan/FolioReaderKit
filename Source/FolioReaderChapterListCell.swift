@@ -1,47 +1,59 @@
-	//
-	//  FolioReaderChapterListCell.swift
-	//  FolioReaderKit
-	//
-	//  Created by Heberti Almeida on 07/05/15.
-	//  Copyright (c) 2015 Folio Reader. All rights reserved.
-	//
-
 import UIKit
 
 class FolioReaderChapterListCell: UITableViewCell {
 	var indexLabel: UILabel?
+	var arrowImageView: UIImageView?
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
+			// Initialize the label and image view
 		self.indexLabel = UILabel()
+		self.arrowImageView = UIImageView()
+		
+		guard let indexLabel = self.indexLabel, let arrowImageView = self.arrowImageView else { return }
+		
+			// Configure the label
+		indexLabel.lineBreakMode = .byWordWrapping
+		indexLabel.numberOfLines = 0
+		indexLabel.font = UIFont(name: "Avenir-Light", size: 17)
+		
+			// Configure the arrow image view
+		arrowImageView.contentMode = .scaleAspectFit
+		if #available(iOS 13.0, *) {
+			arrowImageView.image = UIImage(systemName: "chevron.right") // System arrow icon for iOS 13+
+		} else {
+			arrowImageView.image = UIImage(named: "chevron_right") // Provide a fallback image for earlier versions
+		}// System arrow icon
+		arrowImageView.tintColor = .gray
+		
+			// Create a stack view
+		let stackView = UIStackView(arrangedSubviews: [indexLabel, arrowImageView])
+		stackView.axis = .horizontal
+		stackView.spacing = 10
+		stackView.alignment = .center
+		stackView.distribution = .fill
+		
+			// Add the stack view to the content view
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		contentView.addSubview(stackView)
+		
+			// Set up constraints for the stack view
+		NSLayoutConstraint.activate([
+			stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+			stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+			stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+			stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+			
+			// Arrow image size constraints
+			arrowImageView.widthAnchor.constraint(equalToConstant: 20),
+			arrowImageView.heightAnchor.constraint(equalToConstant: 20)
+		])
 	}
 	
 	func setup(withConfiguration readerConfig: FolioReaderConfig) {
-		
-		self.indexLabel?.lineBreakMode = .byWordWrapping
-		self.indexLabel?.numberOfLines = 0
-		self.indexLabel?.translatesAutoresizingMaskIntoConstraints = false
-		self.indexLabel?.font = UIFont(name: "Avenir-Light", size: 17)
+			// Set text color based on the configuration
 		self.indexLabel?.textColor = readerConfig.menuTextColor
-		
-		if let label = self.indexLabel {
-			self.contentView.addSubview(label)
-			
-				// Configure cell contraints
-			var constraints = [NSLayoutConstraint]()
-			let views = ["label": label]
-			
-			NSLayoutConstraint.constraints(withVisualFormat: "H:|-15-[label]-15-|", options: [], metrics: nil, views: views).forEach {
-				constraints.append($0 as NSLayoutConstraint)
-			}
-			
-			NSLayoutConstraint.constraints(withVisualFormat: "V:|-16-[label]-16-|", options: [], metrics: nil, views: views).forEach {
-				constraints.append($0 as NSLayoutConstraint)
-			}
-			
-			self.contentView.addConstraints(constraints)
-		}
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -50,9 +62,6 @@ class FolioReaderChapterListCell: UITableViewCell {
 	
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		
-			// As the `setup` is called at each reuse, make sure the label is added only once to the view hierarchy.
-		self.indexLabel?.removeFromSuperview()
+		self.indexLabel?.text = nil // Reset the label text
 	}
 }
-

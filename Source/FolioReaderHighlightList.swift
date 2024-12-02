@@ -32,6 +32,8 @@ class FolioReaderHighlightList: UITableViewController {
         self.tableView.separatorInset = UIEdgeInsets.zero
         self.tableView.backgroundColor = self.folioReader.isNight(self.readerConfig.nightModeMenuBackground, self.readerConfig.menuBackgroundColor)
         self.tableView.separatorColor = self.folioReader.isNight(self.readerConfig.nightModeSeparatorColor, self.readerConfig.menuSeparatorColor)
+		self.tableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+
 
         guard let bookId = (self.folioReader.readerContainer?.book.name as NSString?)?.deletingPathExtension else {
             self.highlights = []

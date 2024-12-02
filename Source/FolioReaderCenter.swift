@@ -1359,9 +1359,9 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
 		let pageController = PageViewController(folioReader: folioReader, readerConfig: readerConfig)
 		pageController.viewControllerOne = chapter
 		pageController.viewControllerTwo = highlight
-		pageController.segmentedControlItems = [readerConfig.localizedContentsTitle, readerConfig.localizedHighlightsTitle]
-		
+		pageController.tabBarItems = [ UITabBarItem(title:  readerConfig.localizedContentsTitle, image: nil, tag: 0),UITabBarItem(title: readerConfig.localizedHighlightsTitle, image: nil, tag: 1)]
 			// Create the navigation controller
+		
 		let nav = UINavigationController(rootViewController: pageController)
 		nav.modalPresentationStyle = .fullScreen
 		nav.view.backgroundColor = UIColor.white

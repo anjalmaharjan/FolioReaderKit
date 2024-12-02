@@ -111,7 +111,7 @@ open class FolioReaderConfig: NSObject {
     open var menuTextColor = UIColor(rgba: "#767676")
 
     /// Menu text color
-    open var menuTextColorSelected = UIColor(rgba: "#6ACC50")
+	open var menuTextColorSelected = UIColor.black
     
     // Day mode nav color
     open var daysModeNavBackground = UIColor.white
@@ -221,7 +221,7 @@ open class FolioReaderConfig: NSObject {
     open var localizedShareImageQuote = NSLocalizedString("Share image quote", comment: "")
     open var localizedShareTextQuote = NSLocalizedString("Share text quote", comment: "")
     open var localizedSave = NSLocalizedString("Save", comment: "")
-    open var localizedHighlightNote = NSLocalizedString("Note", comment: "")
+//    open var localizedHighlightNote = NSLocalizedString("Note", comment: "")
 
     public convenience init(withIdentifier identifier: String) {
         self.init()

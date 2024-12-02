@@ -518,6 +518,9 @@ open class FolioReaderPage: UICollectionViewCell, WKNavigationDelegate, UIGestur
 
     override open func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         guard let webView = webView else { return false }
+		
+		
+
 
         if UIMenuController.shared.menuItems?.count == 0 {
             webView.isColors = false

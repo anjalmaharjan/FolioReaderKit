@@ -69,9 +69,9 @@ open class FolioReaderWebView: WKWebView {
             if action == #selector(highlight(_:))
                 || action == #selector(highlightWithNote(_:))
                 || action == #selector(updateHighlightNote(_:))
-                || (action == #selector(define(_:)) && isOneWord)
+//                || (action == #selector(define(_:)) && isOneWord)
                 || (action == #selector(play(_:)) && (book.hasAudio || readerConfig.enableTTS))
-                || (action == #selector(share(_:)) && readerConfig.allowSharing)
+//                || (action == #selector(share(_:)) && readerConfig.allowSharing)
                 || (action == #selector(copy(_:)) && readerConfig.allowSharing) {
                 return true
             }
@@ -80,7 +80,7 @@ open class FolioReaderWebView: WKWebView {
     }
 
     // MARK: - UIMenuController - Actions
-
+     /*
     @objc func share(_ sender: UIMenuController) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
@@ -118,9 +118,9 @@ open class FolioReaderWebView: WKWebView {
 
         let cancel = UIAlertAction(title: self.readerConfig.localizedCancel, style: .cancel, handler: nil)
 
-        alertController.addAction(shareImage)
-        alertController.addAction(shareText)
-        alertController.addAction(cancel)
+//        alertController.addAction(shareImage)
+//        alertController.addAction(shareText)
+//        alertController.addAction(cancel)
 
         if let alert = alertController.popoverPresentationController {
             alert.sourceView = self.folioReader.readerCenter?.currentPage
@@ -129,6 +129,7 @@ open class FolioReaderWebView: WKWebView {
 
         self.folioReader.readerCenter?.present(alertController, animated: true, completion: nil)
     }
+	  */
 
     func colors(_ sender: UIMenuController?) {
         isColors = true
@@ -223,19 +224,19 @@ open class FolioReaderWebView: WKWebView {
         }
     }
 
-    @objc func define(_ sender: UIMenuController?) {
-        js("getSelectedText()") { selectedText in
-            guard let selectedText = selectedText else { return }
-
-            self.setMenuVisible(false)
-            self.clearTextSelection()
-
-            let vc = UIReferenceLibraryViewController(term: selectedText)
-            vc.view.tintColor = self.readerConfig.tintColor
-            guard let readerContainer = self.readerContainer else { return }
-            readerContainer.show(vc, sender: nil)
-        }
-    }
+//    @objc func define(_ sender: UIMenuController?) {
+//        js("getSelectedText()") { selectedText in
+//            guard let selectedText = selectedText else { return }
+//
+//            self.setMenuVisible(false)
+//            self.clearTextSelection()
+//
+//            let vc = UIReferenceLibraryViewController(term: selectedText)
+//            vc.view.tintColor = self.readerConfig.tintColor
+//            guard let readerContainer = self.readerContainer else { return }
+//            readerContainer.show(vc, sender: nil)
+//        }
+//    }
 
     @objc func play(_ sender: UIMenuController?) {
         self.folioReader.readerAudioPlayer?.play()
@@ -296,15 +297,15 @@ open class FolioReaderWebView: WKWebView {
         let menuController = UIMenuController.shared
 
         let highlightItem = UIMenuItem(title: self.readerConfig.localizedHighlightMenu, action: #selector(highlight(_:)))
-        let highlightNoteItem = UIMenuItem(title: self.readerConfig.localizedHighlightNote, action: #selector(highlightWithNote(_:)))
-        let editNoteItem = UIMenuItem(title: self.readerConfig.localizedHighlightNote, action: #selector(updateHighlightNote(_:)))
-        let playAudioItem = UIMenuItem(title: self.readerConfig.localizedPlayMenu, action: #selector(play(_:)))
-        let defineItem = UIMenuItem(title: self.readerConfig.localizedDefineMenu, action: #selector(define(_:)))
+//        let highlightNoteItem = UIMenuItem(title: self.readerConfig.localizedHighlightNote, action: #selector(highlightWithNote(_:)))
+//        let editNoteItem = UIMenuItem(title: self.readerConfig.localizedHighlightNote, action: #selector(updateHighlightNote(_:)))
+//        let playAudioItem = UIMenuItem(title: self.readerConfig.localizedPlayMenu, action: #selector(play(_:)))
+//        let defineItem = UIMenuItem(title: self.readerConfig.localizedDefineMenu, action: #selector(define(_:)))
         let colorsItem = UIMenuItem(title: "C", image: colors) { [weak self] _ in
             self?.colors(menuController)
         }
         let shareItem = UIMenuItem(title: "S", image: share) { [weak self] _ in
-            self?.share(menuController)
+//            self?.share(menuController)
         }
         let removeItem = UIMenuItem(title: "R", image: remove) { [weak self] _ in
             self?.remove(menuController)
@@ -329,10 +330,11 @@ open class FolioReaderWebView: WKWebView {
 
         // menu on existing highlight
         if isShare {
-            menuItems = [colorsItem, editNoteItem, removeItem]
+			menuItems = [colorsItem, removeItem]
+
             
             if (self.readerConfig.allowSharing == true) {
-                menuItems.append(shareItem)
+//                menuItems.append(shareItem)
             }
             
             isShare = false
@@ -341,14 +343,14 @@ open class FolioReaderWebView: WKWebView {
             menuItems = [yellowItem, greenItem, blueItem, pinkItem, underlineItem]
         } else {
             // default menu
-            menuItems = [highlightItem, defineItem, highlightNoteItem]
+			menuItems = [highlightItem]
 
             if self.book.hasAudio || self.readerConfig.enableTTS {
-                menuItems.insert(playAudioItem, at: 0)
+//                menuItems.insert(playAudioItem, at: 0)
             }
 
             if (self.readerConfig.allowSharing == true) {
-                menuItems.append(shareItem)
+//                menuItems.append(shareItem)
             }
         }
         
@@ -367,7 +369,7 @@ open class FolioReaderWebView: WKWebView {
             }
         }
         
-        UIMenuController.shared.setMenuVisible(menuVisible, animated: animated)
+//        UIMenuController.shared.setMenuVisible(menuVisible, animated: animated)
     }
     
     // MARK: - Java Script Bridge
