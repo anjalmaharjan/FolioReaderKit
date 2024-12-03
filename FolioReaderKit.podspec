@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = 'FolioReaderKit'
-    spec.version      = 'V1.0.2'
+    spec.version      = '1.0.3'
     spec.summary      = 'A simple EPUB reader.'
     spec.description  = 'FolioReaderKit is an EPUB reader framework.'
     spec.homepage     = 'https://github.com/anjalmaharjan/FolioReaderKit'
